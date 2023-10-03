@@ -7,8 +7,14 @@
 postgres/
 
 static/products/*.jpg
+static/products/*.jpeg
 static/products/*.png
 static/products/*.gif
+
+public/products/*.jpg
+public/products/*.jpeg
+public/products/*.png
+public/products/*.gif
 
 # Logs
 logs
