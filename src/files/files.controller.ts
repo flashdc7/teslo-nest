@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, UploadedFile, UseInterceptors, BadRequestException } from '@nestjs/common';
 import { FilesService } from './files.service';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { fileFilter } from './helpers/fileFilter.helper';
+import { fileFilter, fileNamer } from './helpers/';
 import { diskStorage } from 'multer';
 
 @Controller('files')
@@ -13,17 +13,21 @@ export class FilesController {
     fileFilter: fileFilter,
     // limits: { fileSize: 1000},
     storage: diskStorage({
-      destination: './static/uploads'
+      destination: './static/products',
+      filename: fileNamer
     })
   }) )
   uploadFile( 
     @UploadedFile() file: Express.Multer.File 
     ){
 
-      // console.log({ fileInController: file });
-      if( !file ){
-        throw new BadRequestException(`Asegurate que el archivo proporcionado es una imagen`)
-      }
+    // console.log({ fileInController: file });
+    if( !file ){
+      throw new BadRequestException(`Asegurate que el archivo proporcionado es una imagen`)
+    }
+
+    console.log(file);
+    
       
     return {
       fileName: file.originalname
