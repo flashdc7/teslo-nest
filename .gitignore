@@ -6,6 +6,10 @@
 .env
 postgres/
 
+static/products/*.jpg
+static/products/*.png
+static/products/*.gif
+
 # Logs
 logs
 *.log
