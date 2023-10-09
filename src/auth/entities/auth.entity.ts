@@ -18,7 +18,9 @@ export class Auth {
     @Column('text')
     fullName:string
 
-    @Column('bool')
+    @Column('bool', {
+        default: true
+    })
     isActive: boolean
 
     @Column('text', {
