@@ -6,6 +6,7 @@ import { Product, ProductImage } from './entities/';
 import { DataSource, Repository } from 'typeorm';
 import { PaginationDto } from '../common/dto/pagination.dto';
 import { validate as isUUID } from 'uuid'
+import { Auth } from 'src/auth/entities/auth.entity';
 
 @Injectable()
 export class ProductsService {
@@ -21,13 +22,14 @@ export class ProductsService {
     private readonly dataSource:DataSource,
   ){}
 
-  async create(createProductDto: CreateProductDto) {
+  async create(createProductDto: CreateProductDto, user:Auth) {
     try {
       const {images= [], ...productDetails}= createProductDto;
 
       const product= this.productRepository.create( {
         ...productDetails,
-        images: images.map( image => this.productImageRepository.create( { url: image } ) )
+        images: images.map( image => this.productImageRepository.create( { url: image } ) ),
+        user,
       } ); 
       await this.productRepository.save(product);
       return {...product, images};
@@ -81,13 +83,13 @@ export class ProductsService {
     }
   }
 
-  async update(id: string, updateProductDto: UpdateProductDto) {
+  async update(id: string, updateProductDto: UpdateProductDto, user: Auth) {
 
     const { images, ...toUpdate }= updateProductDto;
 
 
 
-    const producto= await this.productRepository.preload({ id: id, ...toUpdate, })
+    const producto= await this.productRepository.preload({ id: id, ...toUpdate })
 
     if( !producto )
       throw new NotFoundException( `El producto con el id: ${id} no exite` )
@@ -103,6 +105,8 @@ export class ProductsService {
         producto.images= images.map( image=> this.productImageRepository.create( { url: image } ) )
       }
 
+      producto.user= user
+      
       await queryRunner.manager.save( producto );
       await queryRunner.commitTransaction();
       await queryRunner.release()
