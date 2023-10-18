@@ -8,7 +8,7 @@ export class SeedController {
   constructor(private readonly seedService: SeedService) {}
 
   @Get()
-  @AuthDecorator( ValidRoles.admin )
+  @AuthDecorator( ValidRoles.admin, ValidRoles.user )
   executeSeed() {
     return this.seedService.runSeed();
   }
